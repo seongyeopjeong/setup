@@ -15,6 +15,7 @@ echo "    StrictHostKeyChecking no" >> $SSH/config
 ssh-keygen -t rsa -N "" -f $SSH/id_rsa <<< y
 chmod 600 $SSH/id_rsa
 cp $SSH/id_rsa.pub $HOME/cloud
+cp $SSH/id_rsa $HOME/cloud
 
 PUBLICKEY="$SSH/id_rsa.pub"
 
@@ -24,3 +25,5 @@ if [ ! -f $PUBLICKEY ]; then
 fi
 
 cat $PUBLICKEY >> $SSH/authorized_keys
+
+/usr/sbin/sshd -p 12345
