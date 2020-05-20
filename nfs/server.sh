@@ -4,4 +4,5 @@ sudo apt install -y nfs-kernel-server
 
 mkdir $HOME/cloud
 sudo bash -c "echo $HOME/cloud *\(rw,sync,no_root_squash,no_subtree_check\) >> /etc/exports"
+sudo bash -c "echo $HOME/setup *\(rw,sync,no_root_squash,no_subtree_check\) >> /etc/exports"
 sudo exportfs -a
