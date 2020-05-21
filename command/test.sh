@@ -1,0 +1,1 @@
+mpirun -n 4 --hostfile /root/cloud/hostfile --mca plm_rsh_args -p 12345 --allow-run-as-root --mca btl_tcp_if_include ens3 -bind-to none -map-by slot /root/cloud/mpitutorial/tutorials/mpi-hello-world/code/mpi_hello_world
