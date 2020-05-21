@@ -1,5 +1,5 @@
-mpirun -np 4 \
-    -H 3.34.139.40:1,54.180.128.111:1 \
+mpirun -np 2 \
+    --hostfile ~/cloud/hostfile \
     --mca btl_tcp_if_include ens3 --allow-run-as-root \
     -bind-to none -map-by slot \
     -mca plm_rsh_args "-p 12345"
