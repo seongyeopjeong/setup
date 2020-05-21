@@ -1,4 +1,4 @@
-mpirun -np 4 \
+mpirun -np 2\
     -H 3.34.139.40:1,54.180.128.111:1 \
     --mca btl_tcp_if_include ens3 --allow-run-as-root \
     -bind-to none -map-by slot \
