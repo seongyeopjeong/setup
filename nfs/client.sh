@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
+sudo apt remove -y nfs-common
 sudo apt install -y nfs-common
 
 mkdir -p $HOME/cloud
+mkdir -p $HOME/setup
 if [ $# -lt 1 ]; then
 	echo "Usage: $0 <server_ip>" >&2
 	exit 1
 fi
 sudo mount -t nfs $1:$HOME/cloud $HOME/cloud
+sudo mount -t nfs $1:$HOME/cloud $HOME/setup
