@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sudo apt remove -y nfs-kernel-server
+sudo apt purge -y nfs-kernel-server
 sudo apt install -y nfs-kernel-server
 
 mkdir $HOME/cloud

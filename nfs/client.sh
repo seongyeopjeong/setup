@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sudo apt remove -y nfs-common
+sudo apt purge -y nfs-common
 sudo apt install -y nfs-common
 
 mkdir -p $HOME/cloud
