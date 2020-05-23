@@ -1,0 +1,1 @@
+orovodrun -np 2 -hostfile ~/cloud/hostfile/hostfile -p 12345 --network-interface "ens3" python /examples/pytorch_imagenet_resnet50.py --train-dir /root/cloud/tiny-imagenet-200/train/ --val-dir /root/cloud/tiny-imagenet-200/val/
