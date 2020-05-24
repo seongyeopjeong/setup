@@ -1,0 +1,3 @@
+docker run --gpus all -it --network=host --ipc=host -v $HOME/cloud:/root/cloud -v $HOME/cloud/ssh:/root/.ssh horovod:bufferring \
+	bash -c "/usr/sbin/sshd -p 12345; echo port 12345;  bash ;"\
+#
