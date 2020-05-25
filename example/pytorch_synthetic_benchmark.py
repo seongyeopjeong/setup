@@ -1,12 +1,9 @@
-from __future__ import print_function
-
 import argparse
 import torch.backends.cudnn as cudnn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data.distributed
 from torchvision import models
-from bufferring import torch_hooks as bfr
 import timeit
 import numpy as np
 
@@ -33,14 +30,13 @@ parser.add_argument('--no-cuda', action='store_true', default=False,
 
 parser.add_argument('--use-adasum', action='store_true', default=False,
                     help='use adasum algorithm to do reduction')
-
 parser.add_argument('--threshold', type=int, default=5, metavar='T',
                     help='staleness threshold (default: 5)')
-
 
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 
+from bufferring import torch_hooks as bfr
 
 if args.cuda:
     # Horovod: pin GPU to local rank.
@@ -72,8 +68,9 @@ optimizer = bfr.DistributedOptimizer(optimizer,
                                      compression=compression,
                                      threshold=args.threshold)
 
-
 # Horovod: broadcast parameters & optimizer state.
+bfr.broadcast_state(model)
+bfr.broadcast_state(optimizer)
 
 # Set up fixed fake data
 data = torch.randn(args.batch_size, 3, 224, 224)
@@ -91,9 +88,7 @@ def benchmark_step():
 
 
 def log(s, nl=True):
-    if bfr.rank != 0:
-        return
-    print(s, end='\n' if nl else '')
+    print('[rank:%s] %s' % (bfr.rank, s), end='\n' if nl else '')
 
 
 log('Model: %s' % args.model)

@@ -1,1 +1,1 @@
- mpirun -np 2 -hostfile ~/cloud/hostfile/hostfile --mca btl_tcp_if_include ens3 --allow-run-as-root -bind-to none -map-by slot -mca plm_rsh_args "-p 12345" python3 pytorch_synthetic_benchmark.py --batch-size 64
+ mpirun -hostfile ~/cloud/hostfile/hostfile --mca btl_tcp_if_include ens3 --allow-run-as-root -bind-to none -map-by slot -mca plm_rsh_args "-p 12345" python3 pytorch_synthetic_benchmark.py --batch-size 64
