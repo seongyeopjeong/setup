@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data.distributed
 from torchvision import models
-import horovod.torch as hvd
+from bufferring import torch_hooks as bfr
 import timeit
 import numpy as np
 
@@ -41,11 +41,10 @@ parser.add_argument('--threshold', type=int, default=5, metavar='T',
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 
-hvd.init()
 
 if args.cuda:
     # Horovod: pin GPU to local rank.
-    torch.cuda.set_device(hvd.local_rank())
+    torch.cuda.set_device('cuda:0')
 
 cudnn.benchmark = True
 
@@ -53,8 +52,7 @@ cudnn.benchmark = True
 model = getattr(models, args.model)()
 
 # By default, Adasum doesn't need scaling up learning rate.
-lr_scaler = hvd.size() if not args.use_adasum else 1
-from bufferring import torch_hooks as bfr
+lr_scaler = bfr.size if not args.use_adasum else 1
 
 if args.cuda:
     # Move model to GPU.
@@ -76,8 +74,6 @@ optimizer = bfr.DistributedOptimizer(optimizer,
 
 
 # Horovod: broadcast parameters & optimizer state.
-hvd.broadcast_parameters(model.state_dict(), root_rank=0)
-hvd.broadcast_optimizer_state(optimizer, root_rank=0)
 
 # Set up fixed fake data
 data = torch.randn(args.batch_size, 3, 224, 224)
@@ -95,7 +91,7 @@ def benchmark_step():
 
 
 def log(s, nl=True):
-    if hvd.rank() != 0:
+    if bfr.rank != 0:
         return
     print(s, end='\n' if nl else '')
 
@@ -103,7 +99,7 @@ def log(s, nl=True):
 log('Model: %s' % args.model)
 log('Batch size: %d' % args.batch_size)
 device = 'GPU' if args.cuda else 'CPU'
-log('Number of %ss: %d' % (device, hvd.size()))
+log('Number of %ss: %d' % (device, bfr.size))
 
 # Warm-up
 log('Running warmup...')
@@ -123,4 +119,4 @@ img_sec_mean = np.mean(img_secs)
 img_sec_conf = 1.96 * np.std(img_secs)
 log('Img/sec per %s: %.1f +-%.1f' % (device, img_sec_mean, img_sec_conf))
 log('Total img/sec on %d %s(s): %.1f +-%.1f' %
-    (hvd.size(), device, hvd.size() * img_sec_mean, hvd.size() * img_sec_conf))
+    (bfr.size, device, bfr.size * img_sec_mean, bfr.size * img_sec_conf))
