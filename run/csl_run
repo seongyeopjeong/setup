@@ -1,0 +1,4 @@
+docker run --gpus all -it --network=host --ipc=host -v /mnt/nvme0/ml/bufferring:/root/cloud  qkek9352/bufferring \
+	bash -c "/usr/sbin/sshd -p 12345; echo port 12345;  bash ;"\
+#
+
