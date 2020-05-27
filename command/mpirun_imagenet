@@ -1,0 +1,1 @@
+mpirun -hostfile ~/cloud/hostfile/hostfile --mca btl_tcp_if_include ens3 --allow-run-as-root -bind-to none -map-by slot -mca plm_rsh_args "-p 12345" python3 pytorch_imagenet_resnet50.py --train-dir ~/cloud/tiny-imagenet-200/train/ --val-dir ~/cloud/tiny-imagenet-200/val
